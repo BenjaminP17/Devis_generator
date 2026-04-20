@@ -1,0 +1,108 @@
+version: '3.9'
+
+services:
+  # ─────────────────────────────────────────
+  # PostgreSQL Database
+  # ─────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: devis_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devis_network
+
+  # ─────────────────────────────────────────
+  # Node.js Backend (Express + TypeScript)
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: devis_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: ${BACKEND_PORT}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: ${FRONTEND_URL}
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    volumes:
+      # Hot reload: mount source code
+      - ./backend/src:/app/src:delegated
+      - ./backend/package.json:/app/package.json:ro
+      - ./backend/tsconfig.json:/app/tsconfig.json:ro
+      - ./backend/nodemon.json:/app/nodemon.json:ro
+      # Prevent host node_modules from overriding container's
+      - backend_node_modules:/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - devis_network
+    command: npm run dev
+
+  # ─────────────────────────────────────────
+  # React Frontend (Vite + TailwindCSS)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: devis_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${BACKEND_URL}
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    volumes:
+      # Hot reload: mount source code
+      - ./frontend/src:/app/src:delegated
+      - ./frontend/index.html:/app/index.html:ro
+      - ./frontend/vite.config.ts:/app/vite.config.ts:ro
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js:ro
+      - ./frontend/postcss.config.js:/app/postcss.config.js:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
+      # Prevent host node_modules from overriding container's
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - devis_network
+    command: npm run dev
+
+# ─────────────────────────────────────────
+# Volumes & Networks
+# ─────────────────────────────────────────
+volumes:
+  db_data:
+    driver: local
+  backend_node_modules:
+    driver: local
+  frontend_node_modules:
+    driver: local
+
+networks:
+  devis_network:
+    driver: bridge
