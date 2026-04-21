@@ -98,7 +98,7 @@ function Field({ label, children, span2 }: { label: string; children: React.Reac
 
 /** Currency formatter (FR locale) */
 const fmt = (n: number) =>
-  n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '\u202f€';
+  n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 export default function QuoteGeneratorPage() {
@@ -488,7 +488,7 @@ export default function QuoteGeneratorPage() {
                 {/* Global discount line */}
                 {admin.globalDiscount > 0 && (
                   <div className="flex justify-between items-center py-2.5 border-b border-slate-800 text-sm">
-                    <span className="text-slate-500">Remise globale ({admin.globalDiscount}\u00a0%)</span>
+                    <span className="text-slate-500">Remise globale ({admin.globalDiscount} %)</span>
                     <span className="text-red-400 font-mono tabular-nums">− {fmt(calc.globalDiscountAmount)}</span>
                   </div>
                 )}
@@ -500,7 +500,7 @@ export default function QuoteGeneratorPage() {
                 {/* VAT breakdown */}
                 {calc.vatBreakdown.map(({ rate, amount }) => (
                   <div key={rate} className="flex justify-between items-center py-2.5 border-b border-slate-800 text-sm">
-                    <span className="text-slate-500">TVA {rate}\u00a0%</span>
+                    <span className="text-slate-500">TVA {rate} %</span>
                     <span className="text-slate-300 font-mono tabular-nums">{fmt(amount)}</span>
                   </div>
                 ))}

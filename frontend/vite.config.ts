@@ -20,10 +20,7 @@ export default defineConfig({
     },
   },
 
-  // @react-pdf/renderer uses workers and must be excluded from pre-bundling
-  optimizeDeps: {
-    exclude: ['@react-pdf/renderer'],
-  },
+
 
   resolve: {
     alias: {

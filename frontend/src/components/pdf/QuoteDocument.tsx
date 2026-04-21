@@ -21,7 +21,7 @@ const C = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (n: number): string =>
-  n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '\u202f€';
+  n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 
 const fmtDate = (dateStr: string): string => {
   if (!dateStr) return '—';
@@ -176,10 +176,10 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
 
   const footerParts = [
     emitter.companyName || null,
-    emitter.siret        ? `SIRET\u00a0: ${emitter.siret}`        : null,
-    emitter.apeCode      ? `APE\u00a0: ${emitter.apeCode}`        : null,
+    emitter.siret        ? `SIRET : ${emitter.siret}`        : null,
+    emitter.apeCode      ? `APE : ${emitter.apeCode}`        : null,
     emitter.rcsCity      ? `RCS ${emitter.rcsCity}`               : null,
-    emitter.vatNumber    ? `N°\u00a0TVA\u00a0: ${emitter.vatNumber}` : null,
+    emitter.vatNumber    ? `N° TVA : ${emitter.vatNumber}` : null,
   ].filter(Boolean).join('   •   ');
 
   return (
@@ -194,17 +194,17 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
             {emitter.address     ? <Text style={s.emitterLine}>{emitter.address}</Text>          : null}
             {(emitter.postalCode || emitter.city) &&
               <Text style={s.emitterLine}>{emitter.postalCode} {emitter.city}</Text>}
-            {emitter.phone       ? <Text style={s.emitterLine}>Tél\u00a0: {emitter.phone}</Text>  : null}
+            {emitter.phone       ? <Text style={s.emitterLine}>Tél : {emitter.phone}</Text>  : null}
             {emitter.email       ? <Text style={s.emitterLine}>{emitter.email}</Text>              : null}
             {(emitter.siret || emitter.apeCode) &&
               <Text style={s.emitterLegal}>
                 {[
-                  emitter.siret   ? `SIRET\u00a0: ${emitter.siret}`   : null,
-                  emitter.apeCode ? `APE\u00a0: ${emitter.apeCode}`   : null,
+                  emitter.siret   ? `SIRET : ${emitter.siret}`   : null,
+                  emitter.apeCode ? `APE : ${emitter.apeCode}`   : null,
                 ].filter(Boolean).join('   ')}
               </Text>}
             {emitter.rcsCity     ? <Text style={s.emitterLegal}>RCS {emitter.rcsCity}</Text>      : null}
-            {emitter.vatNumber   ? <Text style={s.emitterLegal}>N°\u00a0TVA\u00a0: {emitter.vatNumber}</Text> : null}
+            {emitter.vatNumber   ? <Text style={s.emitterLegal}>N° TVA : {emitter.vatNumber}</Text> : null}
           </View>
 
           {/* Right — DEVIS metadata */}
@@ -215,11 +215,11 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
               <Text style={s.devisMetaValue}>{admin.quoteNumber || '—'}</Text>
             </View>
             <View style={s.devisMetaRow}>
-              <Text style={s.devisMetaLabel}>Date\u00a0:</Text>
+              <Text style={s.devisMetaLabel}>Date :</Text>
               <Text style={s.devisMetaValue}>{fmtDate(admin.issueDate)}</Text>
             </View>
             <View style={s.devisMetaRow}>
-              <Text style={s.devisMetaLabel}>Valable jusqu'au\u00a0:</Text>
+              <Text style={s.devisMetaLabel}>Valable jusqu'au :</Text>
               <Text style={s.devisMetaValue}>{validityDate}</Text>
             </View>
           </View>
@@ -239,7 +239,7 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
               <Text style={s.clientLine}>{client.billingPostalCode} {client.billingCity}</Text>}
             {client.useDifferentDelivery && (
               <>
-                <Text style={[s.clientLine, { marginTop: 6, fontFamily: 'Helvetica-Bold' }]}>Livraison\u00a0:</Text>
+                <Text style={[s.clientLine, { marginTop: 6, fontFamily: 'Helvetica-Bold' }]}>Livraison :</Text>
                 {client.deliveryAddress   && <Text style={s.clientLine}>{client.deliveryAddress}</Text>}
                 {(client.deliveryPostalCode || client.deliveryCity) &&
                   <Text style={s.clientLine}>{client.deliveryPostalCode} {client.deliveryCity}</Text>}
@@ -270,16 +270,16 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
             <View style={s.colUnit}><Text style={s.tdText}>{item.unit}</Text></View>
             <View style={s.colPrice}>
               <Text style={s.tdText}>
-                {item.unitPriceHT.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u202f€
+                {item.unitPriceHT.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
               </Text>
             </View>
             <View style={s.colDiscount}>
-              <Text style={s.tdText}>{item.discount > 0 ? `${item.discount}\u00a0%` : '—'}</Text>
+              <Text style={s.tdText}>{item.discount > 0 ? `${item.discount} %` : '—'}</Text>
             </View>
-            <View style={s.colVat}><Text style={s.tdText}>{item.vatRate}\u00a0%</Text></View>
+            <View style={s.colVat}><Text style={s.tdText}>{item.vatRate} %</Text></View>
             <View style={s.colTotal}>
               <Text style={s.tdBold}>
-                {lineTotalsHT[i].toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u202f€
+                {lineTotalsHT[i].toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
               </Text>
             </View>
           </View>
@@ -302,7 +302,7 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
             )}
             {admin.globalDiscount > 0 && (
               <View style={s.summaryRow}>
-                <Text style={s.summaryLabel}>Remise globale ({admin.globalDiscount}\u00a0%)</Text>
+                <Text style={s.summaryLabel}>Remise globale ({admin.globalDiscount} %)</Text>
                 <Text style={s.summaryRed}>−{fmt(globalDiscountAmount)}</Text>
               </View>
             )}
@@ -312,7 +312,7 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
             </View>
             {vatBreakdown.map(({ rate, amount }) => (
               <View key={rate} style={s.summaryRow}>
-                <Text style={s.summaryLabel}>TVA {rate}\u00a0%</Text>
+                <Text style={s.summaryLabel}>TVA {rate} %</Text>
                 <Text style={s.summaryValue}>{fmt(amount)}</Text>
               </View>
             ))}
@@ -330,33 +330,33 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
 
           {terms.startDate && (
             <View style={s.termsRow}>
-              <Text style={s.termsLabel}>Date de début\u00a0:</Text>
+              <Text style={s.termsLabel}>Date de début :</Text>
               <Text style={s.termsValue}>{fmtDate(terms.startDate)}</Text>
             </View>
           )}
           {terms.estimatedDuration && (
             <View style={s.termsRow}>
-              <Text style={s.termsLabel}>Durée estimée\u00a0:</Text>
+              <Text style={s.termsLabel}>Durée estimée :</Text>
               <Text style={s.termsValue}>{terms.estimatedDuration}</Text>
             </View>
           )}
           {terms.paymentConditions && (
             <View style={s.termsRow}>
-              <Text style={s.termsLabel}>Conditions de règlement\u00a0:</Text>
+              <Text style={s.termsLabel}>Conditions de règlement :</Text>
               <Text style={s.termsValue}>{terms.paymentConditions}</Text>
             </View>
           )}
           {terms.depositPercentage > 0 && (
             <View style={s.termsRow}>
-              <Text style={s.termsLabel}>Acompte demandé\u00a0:</Text>
+              <Text style={s.termsLabel}>Acompte demandé :</Text>
               <Text style={s.termsValue}>
-                {terms.depositPercentage}\u00a0% — {fmt(depositAmount)}
+                {terms.depositPercentage} % — {fmt(depositAmount)}
               </Text>
             </View>
           )}
           {terms.notes ? <Text style={s.termsNote}>{terms.notes}</Text> : null}
           {emitter.insurance ? (
-            <Text style={s.termsInsurance}>Assurance décennale\u00a0: {emitter.insurance}</Text>
+            <Text style={s.termsInsurance}>Assurance décennale : {emitter.insurance}</Text>
           ) : null}
         </View>
 
@@ -365,7 +365,7 @@ export function QuoteDocument({ quote, calculations }: QuoteDocumentProps): JSX.
           <Text style={s.sigTitle}>Bon pour accord</Text>
           <Text style={s.sigInstruction}>
             À retourner signé avec la mention « Lu et approuvé ».
-            {terms.depositPercentage > 0 ? ` Acompte joint\u00a0: ${fmt(depositAmount)}.` : ''}
+            {terms.depositPercentage > 0 ? ` Acompte joint : ${fmt(depositAmount)}.` : ''}
           </Text>
           <View style={s.sigRow}>
             <View style={s.sigField}>
